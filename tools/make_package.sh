@@ -26,4 +26,3 @@ rm -Rf source
 echo ""
 echo "All done, saved as $filename"
 echo ""
-read
