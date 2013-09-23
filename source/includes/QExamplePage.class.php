@@ -1,4 +1,6 @@
 <?php
+require_once('../../../../qcubed.inc.php');
+require(__DOCROOT__ . __EXAMPLES__ . '/includes/examples.inc.php'); 
 class QExamplePage extends QPage {
 	// Here we set the default page header and footer
 	protected $strPageFooter = '';
@@ -11,68 +13,64 @@ class QExamplePage extends QPage {
 			Examples::PageName()." - QPage Example"
 		);
 		// We are actually reintroducing these, they are called in a normal QForm but were stripped out of QPage.
+		$this->AddJavascriptFile('jquery/jquery.min.js');
 		$this->AddJavascriptFile('qcubed.js');
-		$this->AddJavascriptFile('logger.js');
-		$this->AddJavascriptFile('event.js');
-		$this->AddJavascriptFile('post.js');
-		$this->AddJavascriptFile('control.js');
+//		$this->AddJavascriptFile('logger.js');
+//		$this->AddJavascriptFile('event.js');
+//		$this->AddJavascriptFile('post.js');
+//		$this->AddJavascriptFile('control.js');
 		$this->AddCSSFile('styles.css');
+		$this->AddCSSFile('../php/examples/includes/examples.css');
 
 		QApplication::ExecuteJavaScript("function ViewSource(intCategoryId, intExampleId, strFilename) {
 				var fileNameSection = '';
 				if (arguments.length == 3) {
 					fileNameSection = '/' + strFilename;
 				}
-				var objWindow = window.open('__EXAMPLES__/view_source.php/' + intCategoryId + '/' + intExampleId + fileNameSection, 'ViewSource', 'menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=750,left=50,top=50');
+				var objWindow = window.open('".__EXAMPLES__."/view_source.php/' + intCategoryId + '/' + intExampleId + fileNameSection, 'ViewSource', 'menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=750,left=50,top=50');
 				objWindow.focus();
 			}");
 
-		$this->strPageHeader = ?><div id="page">
-			<div id="header">
-				<div id="headerLeft">
-					<?php if(isset($mainPage)) { ?>
-					<div id="codeVersion"><span class="headerSmall">QCubed Examples - <?php _p(QCUBED_VERSION); ?></span></div>
-					<?php } ?>
-					<?php if(!isset($mainPage)) { ?>
-					<div id="categoryName"><span class="headerSmall"><?php _p((Examples::GetCategoryId() + 1) . '. ' . Examples::$Categories[Examples::GetCategoryId()]['name'], false); ?></span></div>
-					<?php } ?>
-					<div id="pageName"><?php _p(Examples::PageName(), false); ?></div>
-					
-					<div id="pageLinks"><span class="headerSmall">
-					<?php if(!isset($mainPage)) { ?>
-						<?php _p(Examples::PageLinks(), false); ?>
-					<?php } else { ?>
-							<strong><a class="headerLink" href="http://qcu.be">QCubed website</a></strong>
-					<?php } ?>
-					</span></div>
-				</div>
-				<div id="headerRight">
-					<?php if(!isset($mainPage)) { ?>
-						<div id="viewSource"><a href="javascript:ViewSource(<?php _p(Examples::GetCategoryId() . ',' . Examples::GetExampleId()); ?>);">View Source</a></div>
-		<!--				<a href="#" onclick="window.open('http://localhost/validator/htdocs/check?uri=<?php _p(urlencode('http://qcodo/' . QApplication::$RequestUri)); ?>'); return false;" style="color: #ffffff;">Validate</a>-->
-						<div id="willOpen"><span class="headerSmall">will open in a new window</span></div>
-					<?php } ?>
-				</div>
-			</div>
-			<div id="content"><?php ;
-		$this->strPageFooter = '</div>
-			<div id="footer">
-				<div id="footerLeft"><a href="http://qcu.be/" title="Visit the QCubed Homepage"><img src="'.__VIRTUAL_DIRECTORY__.__IMAGE_ASSETS__.'"/qcubed_logo_footer.png" alt="QCubed - A Rapid Prototyping PHP5 Framework" /></a></div>
-				<div id="footerRight">
-					<div><span class="footerSmall">For more information, please visit the QCubed website at <a href="http://www.qcu.be/" class="footerLink">http://www.qcu.be/</a></span></div>
-					<div><span class="footerSmall">Questions, comments, or issues can be discussed at the <a href="http://qcu.be/forum" class="footerLink">Examples Site Forum</a></span></div>
-				</div>
-			</div>
-		</div>
-		<script type="text/javascript">
-		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-		document.write(unescape("%3Cscript src=\'" + gaJsHost + "google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));
-		</script>
-		<script type="text/javascript">
-		try {
-		var pageTracker = _gat._getTracker("UA-7231795-1");
-		pageTracker._trackPageview();
-		} catch(err) {}
+		$this->strPageHeader = '<header><div class="breadcrumb">';
+		if(!isset($mainPage)) {
+			$this->strPageHeader .= '<span class="category-name">'.(Examples::GetCategoryId() + 1) . '. ' . Examples::$Categories[Examples::GetCategoryId()]['name'] .'</span> / ';
+		}
+		$this->strPageHeader .= '<strong class="page-name">'.Examples::PageName().'</strong></div>';
+		
+		if(!isset($mainPage)) {
+			$this->strPageHeader .= '<nav class="page-links">'.Examples::PageLinks().'</nav>';
+		}
+			
+		$this->strPageHeader .= '</header><section id="content">';
+
+		$this->strPageFooter = '';
+
+		if(!isset($mainPage)) {
+			$this->strPageFooter .= '<button id="viewSource">View Source</button>';
+		}
+
+		$this->strPageFooter .= '</section><footer><div id="tagline"><a href="http://qcubed.github.com/" title="QCubed Homepage"><img id="logo" src="'.__VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/qcubed_logo_footer.png" alt="QCubed Framework" /> <span class="version">'.QCUBED_VERSION.'</span></a></div></footer>';
+		$this->strPageFooter .= '<script type="text/javascript">
+			var viewSource = document.getElementById(\'viewSource\');
+			if (viewSource) {
+				viewSource.onclick = function (){
+					var fileNameSection = "",
+						objWindow;
+					if (arguments.length == 3) {
+						fileNameSection = "/" + strFilename;
+					}
+					objWindow = window.open("'. __VIRTUAL_DIRECTORY__ . __EXAMPLES__ .'/view_source.php/'.Examples::GetCategoryId()."/".Examples::GetExampleId().'" + fileNameSection, "ViewSource", "menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=750,left=50,top=50");
+					objWindow.focus();
+					return false;
+				};
+			}			
+			window.gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src=\'" + gaJsHost + "google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));
+
+			try {
+				window.pageTracker = _gat._getTracker("UA-7231795-1");
+				pageTracker._trackPageview();
+			} catch(err) {}
 		</script>';
 	}
 
