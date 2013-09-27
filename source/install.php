@@ -2,8 +2,8 @@
 $objPlugin = new QPlugin();
 $objPlugin->strName = "QPage"; // no spaces allowed
 $objPlugin->strDescription = 'Takes care of the entire XHTML structure, not just the form.';
-$objPlugin->strVersion = "0.1";
-$objPlugin->strPlatformVersion = "1.1"; 
+$objPlugin->strVersion = "0.2";
+$objPlugin->strPlatformVersion = "2.2.1"; 
 $objPlugin->strAuthorName = "D. Scott Carroll, a.k.a. Scottux";
 $objPlugin->strAuthorEmail ="d [dot] scott [dot] carroll [at] gmail [dot] com"; 
 

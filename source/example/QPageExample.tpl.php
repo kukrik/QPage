@@ -1,6 +1,6 @@
 <?php $this->RenderBegin(); ?>
-	<div class="instructions">
-		<div class="instruction_title">QPage</div>
+	<div id="instructions">
+		<h1>QPage</h1>
 		<p>A <strong>QPage</strong> is extended from QForm to produce the
 		entire XHTML head and body structure, not just the form tag. This allows
 		for individual pages to override titles, meta tags, script and css
